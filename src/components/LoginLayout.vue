@@ -13,17 +13,17 @@
                     <ul class="list-social-midia">
                         <a href="#" class="link-social-midia">
                             <li class="item-social-midia">
-                                <i class="fab fa-facebook-f"></i>
+                                <i class="fab fa-twitter"></i>
                             </li>
                         </a>
                         <a href="#" class="link-social-midia">
                             <li class="item-social-midia">
-                                <i class="fab fa-google"></i>
+                                <i class="fab fa-github"></i>
                             </li>
                         </a>
                         <a href="#" class="link-social-midia">
                             <li class="item-social-midia">
-                                <i class="fab fa-linkedin-in"></i>
+                                <i class="fab fa-instagram"></i>
                             </li>
                         </a>
                     </ul>
@@ -265,4 +265,6 @@ export default {
 
 <style scoped>
 @import '../assets/styles.css';
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap');
 </style>

@@ -16,10 +16,10 @@ body{
 }
 
 .container{
+    background: linear-gradient(135deg, #1f3c88, #28a745);
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #7f8c8d;
     height: 100vh;
     width: 100vw;
 }
@@ -31,7 +31,13 @@ body{
     width: 960px;
     height: 50%;
     border-radius: 15px;
-    background-color: #FFF;
+    background: linear-gradient(
+        to right,
+        #ffffff 0%,
+        #f3f3f3 100%
+    );
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
 }
 
 .content::before{
@@ -39,7 +45,13 @@ body{
     position: absolute;
     width: 40%;
     height: 100%;
-    background-color: #7658af;
+    background: linear-gradient(
+        135deg,
+        #6b3fa0 0%,
+        #a342c8 50%,
+        #ff44b3 100%
+    );
+    border-radius: 15;
 }
 
 .first-content{
@@ -138,7 +150,7 @@ body{
 .item-social-midia{
     margin: 1rem 0;
     border: 1px solid #bdc3c7;
-    border-radius: 50%;
+    border-radius: 100%;
     height: 35px;
     width: 35px;
     line-height: 35px;
@@ -169,30 +181,27 @@ body{
     font-size: 10px;
     padding: 10px 50px;
     width: 150px;
-    border-radius: 15px;
+    border-radius: 20px;
     margin-top: 1rem;
     transition: background-color 1s;
 }
 
 .button-primary{
-    background-color: transparent;
-    border: 1px solid #ffffff;
+    background: linear-gradient(90deg, #8e2de2, #ff00c3);
+    border: none;
 }
 
 .button-primary:hover{
-    background-color: #ffffff;
-    color: #7658af;
+    background: linear-gradient(90deg, #ff00c3, #8e2de2);
 }
 
 .button-second{
-    background-color: #7658af;
-    border: 1px solid #7658af;
+    background: linear-gradient(90deg, #28a745, #ffc107);
+    border: none;
 }
 
 .button-second:hover{
-    background-color: #ffffff;
-    border: 1px solid #7658af;
-    color: #7658af;
+    background: linear-gradient(90deg, #ffc107, #28a745);
 }
 
 .icons{
