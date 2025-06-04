@@ -35,17 +35,18 @@
                 <form class="form">
                     <label class="label label-input">
                         <i class="fas fa-envelope icons"></i>
-                        <input type="email" placeholder="E-mail" v-model="registerData.email"/>
+                        <input type="email" placeholder="E-mail" v-model="registerData.email" />
                     </label>
                     <label class="label label-input">
                         <i class="fas fa-lock icons"></i>
-                        <input type="password" placeholder="Senha" v-model="registerData.senha"/>
+                        <input type="password" placeholder="Senha" v-model="registerData.senha" />
                     </label>
                     <label class="label label-input">
                         <i class="fas fa-lock icons"></i>
-                        <input type="password" placeholder="Confirmar senha" v-model="registerData.senhaConfirmada"/>
+                        <input type="password" placeholder="Confirmar senha" v-model="registerData.senhaConfirmada" />
                     </label>
-                    <button id="register" class="button button-second" @click.prevent="handleRegister">Cadastrar</button>
+                    <button id="register" class="button button-second"
+                        @click.prevent="handleRegister">Cadastrar</button>
                 </form>
             </div>
         </div>
@@ -54,7 +55,7 @@
             <div class="first-colunm">
                 <h2 class="title title-primary">Olá, Bem Vindo!</h2>
                 <p class="description description-primary">Faça seu cadastro</p>
-                <p class="description description-primary">e começe sua jornada conosco</p>
+                <p class="description description-primary">para começar uma nova vida</p>
                 <button id="signUp" class="button button-primary" @click="setClass('sign-up')">Cadastrar</button>
             </div>
             <div class="second-colunm">
@@ -64,11 +65,11 @@
                 <form class="form" @submit.prevent="handleLogin">
                     <label class="label label-input">
                         <i class="fas fa-envelope icons"></i>
-                        <input type="email" placeholder="E-mail" v-model="loginData.email"/>
+                        <input type="email" placeholder="E-mail" v-model="loginData.email" />
                     </label>
                     <label class="label label-input">
                         <i class="fas fa-lock icons"></i>
-                        <input type="password" placeholder="Senha" v-model="loginData.senha"/>
+                        <input type="password" placeholder="Senha" v-model="loginData.senha" />
                     </label>
                     <a href="#" class="description description-second">Esqueceu sua senha?</a>
                     <button id="access" class="button button-second">Acessar</button>
@@ -79,6 +80,8 @@
 </template>
 
 <script>
+import { toast } from 'vue3-toastify'
+
 export default {
     name: 'LoginLayout',
     data() {
@@ -86,13 +89,11 @@ export default {
             currentClass: 'on-load',
             error: '',
             loginError: '',
-
             registerData: {
                 email: '',
                 senha: '',
                 senhaConfirmada: '',
             },
-
             loginData: {
                 email: '',
                 senha: '',
@@ -110,50 +111,48 @@ export default {
         },
 
         async handleRegister() {
-
             this.error = '';
-
             if (!this.registerValidation()) return;
-
             if (!(await this.checkEmailExists(this.registerData.email))) return;
 
             try {
                 const response = await fetch('https://umfgcloud-autenticacao-service-7e27ead80532.herokuapp.com/Autenticacao/registar', {
                     method: 'POST',
-                    headers: {
-                    'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        email: this.registerData.email,
-                        senha: this.registerData.senha,
-                        senhaConfirmada: this.registerData.senhaConfirmada
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(this.registerData)
                 });
 
                 if (!response.ok) {
                     const ct = response.headers.get('content-type') || '';
                     if (ct.includes('application/json')) {
                         const payload = await response.json();
-                        const firstError =
-                        payload.errors.Email?.[0] ||
-                        payload.errors.Senha?.[0] ||
-                        payload.errors.SenhaConfirmada?.[0];
-                        this.error = firstError;
+                        const rawError = payload.errors?.Senha?.join(',') || '';
+                        const translatedErrors = [
+                            { match: 'non alphanumeric character', msg: 'A senha deve conter pelo menos um caractere especial.' },
+                            { match: 'digit', msg: 'A senha deve conter pelo menos um número.' },
+                            { match: 'uppercase', msg: 'A senha deve conter pelo menos uma letra maiúscula.' }
+                        ];
+                        this.error = rawError
+                            .split(',')
+                            .map(err => {
+                                const match = translatedErrors.find(e => err.includes(e.match));
+                                return match ? match.msg : err;
+                            })
+                            .join(' | ');
                     } else {
                         const text = await response.text();
-                        if (text.includes('is already taken')) {
-                        this.error = `O e-mail '${this.registerData.email}' já está em uso.`;
-                        } else {
-                        this.error = text;
-                        }
+                        this.error = text.includes('is already taken')
+                            ? `O e-mail '${this.registerData.email}' já está em uso.`
+                            : text;
                     }
+                    toast.error(this.error);
                     return;
                 }
 
-                alert('Cadastro realizado com sucesso');
+                toast.success('Cadastro realizado com sucesso!');
             } catch (error) {
                 console.error(error);
-                alert('Erro na requisição')
+                toast.error('Erro na requisição');
             }
         },
 
@@ -163,42 +162,38 @@ export default {
 
             try {
                 const response = await fetch(
-                'https://umfgcloud-autenticacao-service-7e27ead80532.herokuapp.com/Autenticacao/autenticar',
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                    email: this.loginData.email,
-                    senha: this.loginData.senha
-                    })
-                }
+                    'https://umfgcloud-autenticacao-service-7e27ead80532.herokuapp.com/Autenticacao/autenticar',
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(this.loginData)
+                    }
                 );
 
                 if (!response.ok) {
-                const ct = response.headers.get('content-type') || '';
-                if (ct.includes('application/json')) {
-                    const payload = await response.json();
-                    this.loginError = payload.errors?.Email?.[0]
-                                    || payload.errors?.Senha?.[0]
-                                    || 'Erro de validação.';
-                } else {
-                    const text = await response.text();
-                    this.loginError = text;
-                }
-                return;
+                    const ct = response.headers.get('content-type') || '';
+                    if (ct.includes('application/json')) {
+                        const payload = await response.json();
+                        this.loginError = payload.errors?.Email?.[0] || payload.errors?.Senha?.[0] || 'Erro de validação.';
+                    } else {
+                        const text = await response.text();
+                        this.loginError = text;
+                    }
+                    toast.error(this.loginError);
+                    return;
                 }
 
                 const { token, dataExpiracao } = await response.json();
                 localStorage.setItem('token', token);
-                alert('Login bem-sucedido! Expira em ' + new Date(dataExpiracao).toLocaleString());
+                toast.success(`Login bem-sucedido! Expira em ${new Date(dataExpiracao).toLocaleString()}`);
+                this.$router.push('/welcome')
             } catch (err) {
                 console.error(err);
-                this.loginError = 'Erro na requisição.';
+                toast.error('Erro na requisição.');
             }
         },
 
-
-        registerValidation () {
+        registerValidation() {
             const { email, senha, senhaConfirmada } = this.registerData;
             const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
@@ -218,25 +213,29 @@ export default {
                 this.error = 'Senhas não conferem.';
                 return false;
             }
-                this.error = '';
-                return true;
+
+            this.error = '';
+            return true;
         },
 
         async checkEmailExists(email) {
-            const res = await fetch(
-                'https://umfgcloud-autenticacao-service-7e27ead80532.herokuapp.com/Autenticacao/verificarEmail?email='
-                + encodeURIComponent(email),
-                { headers: { 'Content-Type': 'application/json' } }
-            );
-            if (!res.ok) {
+            try {
+                const res = await fetch(
+                    'https://umfgcloud-autenticacao-service-7e27ead80532.herokuapp.com/Autenticacao/verificarEmail?email=' + encodeURIComponent(email),
+                    { headers: { 'Content-Type': 'application/json' } }
+                );
+                if (!res.ok) return true;
+
+                const { exists } = await res.json();
+                if (exists) {
+                    this.error = 'Este e-mail já está em uso.';
+                    toast.error(this.error);
+                    return false;
+                }
+                return true;
+            } catch {
                 return true;
             }
-            const { exists } = await res.json();
-            if (exists) {
-                this.error = 'Este e-mail já está em uso.';
-                return false;
-            }
-            return true;
         },
 
         loginValidation() {
@@ -255,13 +254,14 @@ export default {
                 this.loginError = 'Informe a senha.';
                 return false;
             }
+
             this.loginError = '';
             return true;
-        },
-
+        }
     }
 };
 </script>
+
 
 <style scoped>
 @import '../assets/styles.css';
