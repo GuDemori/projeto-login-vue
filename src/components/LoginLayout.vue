@@ -116,7 +116,7 @@ export default {
             if (!(await this.checkEmailExists(this.registerData.email))) return;
 
             try {
-                const response = await fetch('https://umfgcloud-autenticacao-service-7e27ead80532.herokuapp.com/Autenticacao/registar', {
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/Autenticacao/registar`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(this.registerData)
@@ -162,7 +162,7 @@ export default {
 
             try {
                 const response = await fetch(
-                    'https://umfgcloud-autenticacao-service-7e27ead80532.herokuapp.com/Autenticacao/autenticar',
+                    `${import.meta.env.VITE_API_URL}/Autenticacao/autenticar`,
                     {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -221,7 +221,7 @@ export default {
         async checkEmailExists(email) {
             try {
                 const res = await fetch(
-                    'https://umfgcloud-autenticacao-service-7e27ead80532.herokuapp.com/Autenticacao/verificarEmail?email=' + encodeURIComponent(email),
+                    `${import.meta.env.VITE_API_URL}/Autenticacao/verificarEmail?email=` + encodeURIComponent(email),
                     { headers: { 'Content-Type': 'application/json' } }
                 );
                 if (!res.ok) return true;
