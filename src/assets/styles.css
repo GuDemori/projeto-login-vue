@@ -159,9 +159,8 @@ body{
 }
 
 .link-social-midia:hover .item-social-midia{
-    background-color: #7658af;
-    border: 1px solid #7658af;
-    color: #FFF;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-color: rgba(0, 0, 0, 0.25);
 }
 
 .link-social-midia:not(:first-child){
@@ -169,8 +168,15 @@ body{
 }
 
 .link-social-midia .item-social-midia{
-    transition: background-color 1.0s;
-}
+    border: 2px solid rgba(0, 0, 0, 0.15);
+    background-color: rgba(255, 255, 255, 0.3);
+    transition: background-color 0.3s, border-color 0.3s;}
+
+    .item-social-midia i {
+        color: #111111;
+        font-size: 1.2rem;
+    }
+
 
 .button{
     align-self: center;
@@ -196,12 +202,12 @@ body{
 }
 
 .button-second{
-    background: linear-gradient(90deg, #28a745, #ffc107);
+    background: linear-gradient(90deg, #24c57d, #2ab7e1);
     border: none;
 }
 
 .button-second:hover{
-    background: linear-gradient(90deg, #ffc107, #28a745);
+    background: linear-gradient(90deg, #2ab7e1, #24c57d);
 }
 
 .icons{
